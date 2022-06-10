@@ -252,8 +252,7 @@ def make_app():
         cookie_secret="abcdefghjue82378129393",
         debug=True
     )
-cpf = '67898246691'
-senha = '281263'
+
 
 
 port_http_server = 8886

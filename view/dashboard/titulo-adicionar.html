@@ -186,36 +186,46 @@
 			var type_source = $(data_element).find('.type-source');
 			var language = $(data_element).find('.data-source-language');
 			var quality = $(data_element).find('.data-source-quality');
-			for(var index_source=0;index_source<data_sources.length;index_source++){
-				var item_source = data_sources[index_source];
-				var item_type = type_source[index_source];
-				var item_language = language[index_source];
-				var item_quality = quality[index_source];
-				sources.push({
-					'source': item_source.value,
-					'type': item_type.value,
-					'language': item_language.value,
-					'quality': item_quality.value
-				});
+			if(data_sources.length>0){
+				for(var index_source=0;index_source<data_sources.length;index_source++){
+					var item_source = data_sources[index_source];
+					var item_type = type_source[index_source];
+					var item_language = language[index_source];
+					var item_quality = quality[index_source];
+					if((item_source.length>0) && (item_type.length>0) && (item_language.length>0) && (item_quality.length>0)){
+						sources.push({
+							'source': item_source.value,
+							'type': item_type.value,
+							'language': item_language.value,
+							'quality': item_quality.value
+						});
+					}
+				}
 			}
 			var data_subtitles = $(data_element).find('.data-source-subtitle');
 			var type_subtitle = $(data_element).find('.type-source-subtitle');
 			var language_subtitle = $(data_element).find('.data-source-subtitle-language');
-			for(var index_subtitle=0;index_subtitle<data_subtitles.length;index_subtitle++){
-				var item_subtitle = data_subtitles[index_subtitle];
-				var item_type_subtitle = type_subtitle[index_subtitle];
-				var item_language_subtitle = language_subtitle[index_subtitle];
-				subtitles.push({
-					'source': item_subtitle.value,
-					'type': item_type_subtitle.value,
-					'language': item_language_subtitle.value
+			if(data_subtitles.length>0){
+				for(var index_subtitle=0;index_subtitle<data_subtitles.length;index_subtitle++){
+					var item_subtitle = data_subtitles[index_subtitle];
+					var item_type_subtitle = type_subtitle[index_subtitle];
+					var item_language_subtitle = language_subtitle[index_subtitle];
+					if((item_subtitle.length>0) && (item_type_subtitle.length>0) && (item_language_subtitle.length>0)){
+						subtitles.push({
+							'source': item_subtitle.value,
+							'type': item_type_subtitle.value,
+							'language': item_language_subtitle.value
+						});
+					}
+				}
+			}
+			if(title_item.length>0){
+				source.push({
+					"title": title_item,
+					"source": sources,
+					"subtitle": subtitles
 				});
 			}
-			source.push({
-				"title": title_item,
-				"source": sources,
-				"subtitle": subtitles
-			})
 		}
 		console.log(source);
 		$.post('/api/dashboard/titulo/add', {
