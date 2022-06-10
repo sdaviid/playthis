@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="/dashboard/static/plugins/jquery/jquery.min.js"></script>
+	<script src="/dashboard/static/dist/js/video.js"></script>
+	<!-- <script src="https://unpkg.com/silvermine-videojs-quality-selector/dist/js/silvermine-videojs-quality-selector.min.js"></script> -->
+	<link rel="stylesheet" href="/dashboard/static/dist/css/video-js.css">
+	<!-- <link rel="stylesheet" href="https://unpkg.com/silvermine-videojs-quality-selector/dist/css/quality-selector.css"> -->
+</head>
+<body>
+	<h1 id="title-video"></h1>
+
+	<video id="video_1" height="400px" width="500" class="video-js vjs-default-skin video_1" controls preload="auto" data-setup='{}'>
+		
+	   <!-- <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/a/ab/Caminandes_3_-_Llamigos_-_Blender_Animated_Short.webm/Caminandes_3_-_Llamigos_-_Blender_Animated_Short.webm.720p.webm" type="video/webm" label="720P">
+	   <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/a/ab/Caminandes_3_-_Llamigos_-_Blender_Animated_Short.webm/Caminandes_3_-_Llamigos_-_Blender_Animated_Short.webm.480p.webm" type="video/webm" label="480P" selected="true">
+	      <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/a/ab/Caminandes_3_-_Llamigos_-_Blender_Animated_Short.webm/Caminandes_3_-_Llamigos_-_Blender_Animated_Short.webm.360p.webm" type="video/webm" label="360P">
+	      <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/a/ab/Caminandes_3_-_Llamigos_-_Blender_Animated_Short.webm/Caminandes_3_-_Llamigos_-_Blender_Animated_Short.webm.240p.webm" type="video/webm" label="240P"> -->
+	</video>
+	<div id="video-next"">
+	</div>
+<script>
+	var video_id = {{ video_id }}
+	var player = videojs('video_1');
+	$(document).ready(function(){
+		$.getJSON(`/api/video-data?id=${video_id}`, function(data){
+			var sources = [];
+			var subtitles = [];
+			for(var index=0;index<data.data.source.length;index++){
+				var item = data.data.source[index];
+				console.log(item);
+				var temp = {src: item.data, type: 'video/mp4'}
+				sources.push(temp);
+				// $('video').append(`
+				// 	<source src="${item.data}" type="video/mp4" label="${item.quality}">
+				// `);
+			}
+			player.src(sources);
+			for(var index=0;index<data.data.subtitle.length;index++){
+				var item = data.data.subtitle[index];
+				subtitles.push(item);
+			}
+			player.on('pause', function(){
+				console.log('pause');
+			});
+			player.on('loadeddata', function(){
+				console.log('ready');
+				for(var index=0;index<subtitles.length;index++){
+					var item = subtitles[index];
+					player.addRemoteTextTrack({
+					            kind: 'subtitles',
+					            src: `/subtitle?url=${item.data}`,
+					            label:`${item.language}`,
+					            mode: 'showing'
+					}, false);
+				}
+				const tracks = player.remoteTextTracks();
+				for (let i = 0; i < tracks.length; i++) { 
+				    const track = tracks[i];
+				    if(track.kind==='captions' && track.language === 'eng') {
+				        track.mode = 'showing';
+				  }
+				}
+			});
+			console.log(sources);
+		});
+		$.getJSON(`/api/next-video?id=${video_id}`, function(data){
+			if(data.length>0){
+				$('#video-next').append(`
+					proximo <a href="/video?id=${data[0].id}">${data[0].description}</a>
+				`);
+			}
+		});
+		$.getJSON(`/api/detail-video?id=${video_id}`, function(data){
+			if(data.status === true){
+				$('#title-video').append(`
+					${data.title}
+				`);
+			}
+		});
+		// videojs("video_1", {}, function() {
+		//    var player = this;
+		//    player.controlBar.addChild('QualitySelector');
+		// });
+	});
+	
+</script>
+</body>
+</html>

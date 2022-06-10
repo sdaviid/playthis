@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		.form{
+    margin:auto;
+    box-shadow: unset 1px 1px 4px #FFD5E7;
+    
+    width:480px;
+    height: 350px;
+    line-height: 25px;
+    border-radius: 10px;
+	}
+	body {
+	    background-color: rgb(32, 34, 58);
+	}
+	h2 {
+	    color:white;
+	    font-weight: bold;
+	    text-align:center;
+	}
+	img {
+	    position: sticky;
+	    top:10px; left:48%;
+	    
+	}
+	input#name, input#password {
+	    margin:15px;
+	    width:400px;
+	    height:40px;
+	    border-radius: 5px;
+	    background:rgba(14, 15, 41, 0.555);
+	    border:transparent;
+	    border-bottom: 1px white groove;
+	    font-size: large;
+	    color:white;
+	}
+
+	::placeholder {
+	    font-size: small;
+	    object-position: top;
+	}
+	input#submit {
+	    align-content: center;
+	    margin:20px;
+	    width:400px;
+	    height:40px;
+	    border-radius: 25px;
+	    color:#fff;
+	    background-color: rgba(68, 184, 230, 0.877);
+	    font-weight: bold;
+	    cursor:pointer;
+	}
+	input#submit:hover { background: rgba(60, 78, 85, 0.877);}
+	p  {
+	    margin: auto;
+	    padding-left:72px;
+	}
+	a{
+	    text-decoration: none;
+	    color:royalblue;
+	    font-size:14px;
+	}
+</style>
+</head>
+<body>
+	<div class="form">
+	    <h2>login</h2>
+	    <form method="post" >
+	        <input type="text" id="name" name="username" placeholder="usuario" aria-required="true">
+	        <br/>
+	        <input type="password" id="password" name="password" placeholder="senha" required>
+	        <br/>
+	        <input type="submit" id="submit" name="Log in" placeholder="Logar" value="logar" >
+	    </form>
+	</div>
+</body>
+</html>

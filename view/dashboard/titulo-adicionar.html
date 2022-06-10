@@ -1,0 +1,341 @@
+{% extends "../view/dashboard/index.html" %}
+{% block title %}Titulo - Adicionar{% end %}
+{% block css_add %}
+<style>
+	.data-title {
+		padding: 10px;
+		border: 1px solid #ccc;
+	}
+</style>
+{% end %}
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+  	<div class="col-md-12">
+
+		<div class="card card-primary">
+			<div class="card-header">
+				<h3 class="card-title">Adicionar Novo T&iacute;tulo</h3>
+			</div>
+			 
+
+			<form>
+				<div class="card-body" id="form_data">
+					<div class="form-group">
+						<label for="title_name">Nome T&iacute;tulo</label>
+						<input type="email" class="form-control" id="title-name" name="title-name" placeholder="Two and a Half Man">
+					</div>
+					<div class="form-group">
+						<label>Tipo T&iacute;tulo</label>
+						<select class="form-control" name="sel-type-title" id="sel-type-title">
+						</select>
+					</div>
+					<div class="form-group">
+							<label>T&iacute;tulo pertence</label>
+							<select class="form-control" name="sel-title-belong" id="sel-title-belong" disabled="disabled">
+							</select>
+					</div>
+					<div class="container-fluid title-data" style="display: none;">
+						<div class="data-title" id="data-title-1">
+						  <div class="row">
+						    <div class="col-sm"-12>
+						      	<label for="data-title">Data Title<a href='#' id="btn_add_source"> +</a></label>
+								<input type="text" class="form-control data-title" id="data-title" name="data-title" placeholder="Titulo">
+						    </div>
+						  </div>
+						  <div class="row" id="title_data_source">
+						    <div class="col-sm-3">
+						      <label for="data-content">Data Source <a href='#' id="btn_add_data_source"> +</a></label>
+								<input type="text" class="form-control data-source" id="data-content" name="data-content" placeholder="http://">
+						    </div>
+						    <div class="col-sm-3">
+						      <label>Tipo Source</label>
+						      <select class="form-control type-source" name="sel-type-source" id="sel-type-source">
+						      	<option value="uptobox" selected="selected">Uptobox</option>
+						      </select>
+						    </div>
+						    <div class="col-sm-3">
+						    	<label for="data-content-language">Idioma</label>
+						    	<input type="text" class="form-control data-source-language" id="data-content-language" name="data-content-language" placeholder="Ingl&ecirc;s">
+						    </div>
+						    <div class="col-sm-3">
+						    	<label for="data-content-quality">Qualidade</label>
+						    	<input type="text" class="form-control data-source-quality" id="data-content-quality" name="data-content-quality" placeholder="720p">
+						    </div>
+						  </div>
+						  <div class="row" id="title_source_subtitle">
+						    <div class="col-sm-4">
+						      <label for="data-content">Data Source Subtitle<a href='#' id="btn_add_source_subtitle"> +</a></label>
+						      <input type="text" class="form-control data-source-subtitle" id="data-content-subitlte" name="data-content-subitlte" placeholder="http://">
+						    </div>
+						    <div class="col-sm-4">
+						      <label>Tipo Source</label>
+						      <select class="form-control type-source-subtitle" name="sel-type-source-subtitle" id="sel-type-source-subtitle">
+						      	<option value="uptobox" selected="selected">Uptobox</option>
+						      </select>
+						    </div>
+						    <div class="col-sm-4">
+						    	<label for="data-content-subtitle-language">Idioma</label>
+						    	<input type="text" class="form-control data-source-subtitle-language" id="data-content-subtitle-language" name="data-content-subtitle-language" placeholder="Ingl&ecirc;s">
+						    </div>
+						  </div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-footer">
+					<button type="submit" class="btn btn-primary" name="btn-title-add" id="btn-title-add">Adicionar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+</section>
+{% end %}
+{% block nav_active %}
+<script>
+  open_nav_by_id('nav_title')
+  active_nav_by_id('nav_title_add')
+ </script>
+{% end %}
+{% block js_script %}
+<script>
+	function get_title_belongs_type(id){
+		$.getJSON(`/api/dashboard/titulo/list-title-special-key?id_type=${id}`, function(data){
+			if(data.status === true){
+				for(var index=0;index<data.data.length;index++){
+					var item_raw = data.data[index];
+					$('#sel-title-belong').append(`
+						<option value="${item_raw.id}">${item_raw.description}</option>
+					`);
+				}
+			}
+		});
+	}
+	function get_title_types(){
+		return $.getJSON("/api/dashboard/titulo/list-title-types", function(data){
+			if(data.status === true){
+				$('#sel-title-belong').attr('disabled', false);
+				for(var index=0;index<data.data.length;index++){
+					var item_raw = data.data[index];
+					var belong = ` ${item_raw.title_belong_description}`
+					$('#sel-type-title').append(`
+						<option value="${item_raw.id}" data-key="${item_raw.key}">${item_raw.description}</option>
+					`);
+				}
+			}else{
+				return false;
+			}
+		});
+	}
+	$(document).on('click', '#btn_add_data_source', function(e){
+		e.preventDefault();
+		$(this).closest('#title_data_source').append(`
+			        <div class="col-sm-3">
+			          <label for="data-content">Data Source <a href='#' id="btn_add_data_source"> +</a></label>
+			    		<input type="text" class="form-control data-source" id="data-content" name="data-content" placeholder="http://">
+			        </div>
+			        <div class="col-sm-3">
+			          <label>Tipo Source</label>
+			          <select class="form-control type-source" name="sel-type-source" id="sel-type-source">
+			          	<option value="uptobox" selected="selected">Uptobox</option>
+			          </select>
+			        </div>
+			        <div class="col-sm-3">
+			        	<label for="data-content-language">Idioma</label>
+			        	<input type="text" class="form-control data-source-language" id="data-content-language" name="data-content-language" placeholder="Ingl&ecirc;s">
+			        </div>
+			        <div class="col-sm-3">
+			        	<label for="data-content-quality">Qualidade</label>
+			        	<input type="text" class="form-control data-source-quality" id="data-content-quality" name="data-content-quality" placeholder="720p">
+			        </div>
+		`);
+	});
+	$(document).on('click', '#btn_add_source_subtitle', function(e){
+		e.preventDefault();
+		$(this).closest('#title_source_subtitle').append(`
+			<div class="col-sm-4">
+			  <label for="data-content">Data Source Subtitle<a href='#' id="btn_add_source_subtitle"> +</a></label>
+			  <input type="text" class="form-control data-source-subtitle" id="data-content-subitlte" name="data-content-subitlte" placeholder="http://">
+			</div>
+			<div class="col-sm-4">
+			  <label>Tipo Source</label>
+			  <select class="form-control type-source-subtitle" name="sel-type-source-subtitle" id="sel-type-source-subtitle">
+			  	<option value="uptobox" selected="selected">Uptobox</option>
+			  </select>
+			</div>
+			<div class="col-sm-4">
+				<label for="data-content-subtitle-language">Idioma</label>
+				<input type="text" class="form-control data-source-subtitle-language" id="data-content-subtitle-language" name="data-content-subtitle-language" placeholder="Ingl&ecirc;s">
+			</div>
+		`);
+	});
+	$(document).on('click', '#btn-title-add', function(e){
+		e.preventDefault();
+		var data_titles = $('div.data-title');
+		var source = [];
+		var title = $('#title-name').val();
+		var title_type = $('#sel-type-title').val();
+		var title_belong = $('#sel-title-belong').val();
+		for(var index=0;index<data_titles.length;index++){
+			var data_element = data_titles[index];
+			var title_item = $(data_element).find('#data-title')[0].value;
+			var sources = [];
+			var subtitles = [];
+			var data_sources = $(data_element).find('.data-source');
+			var type_source = $(data_element).find('.type-source');
+			var language = $(data_element).find('.data-source-language');
+			var quality = $(data_element).find('.data-source-quality');
+			for(var index_source=0;index_source<data_sources.length;index_source++){
+				var item_source = data_sources[index_source];
+				var item_type = type_source[index_source];
+				var item_language = language[index_source];
+				var item_quality = quality[index_source];
+				sources.push({
+					'source': item_source.value,
+					'type': item_type.value,
+					'language': item_language.value,
+					'quality': item_quality.value
+				});
+			}
+			var data_subtitles = $(data_element).find('.data-source-subtitle');
+			var type_subtitle = $(data_element).find('.type-source-subtitle');
+			var language_subtitle = $(data_element).find('.data-source-subtitle-language');
+			for(var index_subtitle=0;index_subtitle<data_subtitles.length;index_subtitle++){
+				var item_subtitle = data_subtitles[index_subtitle];
+				var item_type_subtitle = type_subtitle[index_subtitle];
+				var item_language_subtitle = language_subtitle[index_subtitle];
+				subtitles.push({
+					'source': item_subtitle.value,
+					'type': item_type_subtitle.value,
+					'language': item_language_subtitle.value
+				});
+			}
+			source.push({
+				"title": title_item,
+				"source": sources,
+				"subtitle": subtitles
+			})
+		}
+		console.log(source);
+		$.post('/api/dashboard/titulo/add', {
+			'title-name': title,
+			'sel-type-title': title_type,
+			'sel-title-belong': title_belong,
+			'data-source': JSON.stringify(source)
+		}, function(data){
+			console.log(data);
+			if(data.status === true){
+				alert('adicionado com sucesso');
+			}else{
+				alert('erro adicionar');
+			}
+		});
+		// var title = $('#title-name').val();
+		// var title_type = $('#sel-type-title').val();
+		// var title_belong = $('#sel-title-belong').val();
+		// var data_titles = $('.data-title');
+		// var data_titles_source = $('.data-source');
+		// var type_source = $('.type-source');
+		// var data_source_subtitle = $('.data-source-subtitle');
+		// var type_source_subtitle = $('.type-source-subtitle');
+		// var data_titles_values = [];
+		// for(var index=0;index<data_titles.length;index++){
+		// 	var item_data = data_titles[index];
+		// 	var item_data_source = data_titles_source[index];
+		// 	var item_type_data_source = type_source[index];
+		// 	var item_data_source_subtitle = data_source_subtitle[index];
+		// 	var item_type_data_source_subtitle = type_source_subtitle[index];
+		// 	data_titles_values.push(
+		// 		{
+		// 			'title': item_data.value, 
+		// 			'source': item_data_source.value,
+		// 			'type_source': item_type_data_source.value,
+		// 			'subtitle': item_data_source_subtitle.value,
+		// 			'type_source_subtitle': item_type_data_source_subtitle.value
+		// 		}
+		// 	);
+		// }
+		// console.log(data_titles_values);
+		// $.post('/api/dashboard/titulo/add', {
+		// 	'title-name': title,
+		// 	'sel-type-title': title_type,
+		// 	'sel-title-belong': title_belong,
+		// 	'data-source': JSON.stringify(data_titles_values)
+		// }, function(data){
+		// 	console.log(data);
+		// 	if(data.status === true){
+		// 		alert('adicionado com sucesso');
+		// 	}else{
+		// 		alert('erro adicionar');
+		// 	}
+		// })
+	})
+	$(document).ready(function(){
+		let titles = get_title_types();
+		if (titles === false){
+			alert('failed load title types');
+		}
+	});
+	$(document).on('change', '#sel-type-title', function(){
+		var sel_type_object = $(this).find(":selected");
+		var data_key = sel_type_object.attr('data-key')
+		if((data_key == 'season') || (data_key == 'episode')){
+			get_title_belongs_type(sel_type_object.attr('value'));
+			$('.title-data').css('display', 'block');
+		}else{
+			$('.title-data').css('display', 'none');
+		}
+	});
+	var cont_data_title = 1;
+	$(document).on('click', '#btn_add_source', function(e){
+		e.preventDefault();
+		cont_data_title += 1;
+		$('.title-data').append(`
+			<div class="data-title" id="data-title-${cont_data_title}">
+			  <div class="row">
+			    <div class="col-sm"-12>
+			      	<label for="data-title">Data Title<a href='#' id="btn_add_source"> +</a></label>
+					<input type="text" class="form-control data-title" id="data-title" name="data-title" placeholder="Titulo">
+			    </div>
+			  </div>
+			  <div class="row" id="title_data_source">
+			    <div class="col-sm-3">
+			      <label for="data-content">Data Source <a href='#' id="btn_add_data_source"> +</a></label>
+					<input type="text" class="form-control data-source" id="data-content" name="data-content" placeholder="http://">
+			    </div>
+			    <div class="col-sm-3">
+			      <label>Tipo Source</label>
+			      <select class="form-control type-source" name="sel-type-source" id="sel-type-source">
+			      	<option value="uptobox" selected="selected">Uptobox</option>
+			      </select>
+			    </div>
+			    <div class="col-sm-3">
+			    	<label for="data-content-language">Idioma</label>
+			    	<input type="text" class="form-control data-source-language" id="data-content-language" name="data-content-language" placeholder="Ingl&ecirc;s">
+			    </div>
+			    <div class="col-sm-3">
+			    	<label for="data-content-quality">Qualidade</label>
+			    	<input type="text" class="form-control data-source-quality" id="data-content-quality" name="data-content-quality" placeholder="720p">
+			    </div>
+			  </div>
+			  <div class="row" id="title_source_subtitle">
+			    <div class="col-sm-4">
+			      <label for="data-content">Data Source Subtitle<a href='#' id="btn_add_source_subtitle"> +</a></label>
+			      <input type="text" class="form-control data-source-subtitle" id="data-content-subitlte" name="data-content-subitlte" placeholder="http://">
+			    </div>
+			    <div class="col-sm-4">
+			      <label>Tipo Source</label>
+			      <select class="form-control type-source-subtitle" name="sel-type-source-subtitle" id="sel-type-source-subtitle">
+			      	<option value="uptobox" selected="selected">Uptobox</option>
+			      </select>
+			    </div>
+			    <div class="col-sm-4">
+			    	<label for="data-content-subtitle-language">Idioma</label>
+			    	<input type="text" class="form-control data-source-subtitle-language" id="data-content-subtitle-language" name="data-content-subtitle-language" placeholder="Ingl&ecirc;s">
+			    </div>
+			</div>
+		`);
+	})
+</script>
+{% end %}
