@@ -333,16 +333,21 @@ class api_title_add(baseAuthenticatedAPI):
             if title_name != False and title_type != False:
                 data_new_title = Title.add(self.db, description=title_name, id_title=title_belong, id_title_type=title_type);
                 if data_new_title:
-                    default_body.update({'status': True, 'data': [data_new_title.id]});
+                    default_body.update({'status': True, 'data': {'id': data_new_title.id, 'description': data_new_title.description, 'id_title': data_new_title.id_title, 'id_title_type': data_new_title.id_title_type, 'date_created': data_new_title.date_created, 'title': []}});
                     if data_source:
                         for data_item in json.loads(data_source):
+                            sources = []
+                            subtitles = []
                             data_new_title_episode = Title.add(self.db, description=data_item['title'], id_title=data_new_title.id, id_title_type=4)
                             for data_item_source in data_item['source']:
                                 data_new_source = TitleData.add(self.db, id_title=data_new_title_episode.id, id_data_source=1, data=data_item_source['source'], language=data_item_source['language'], quality=data_item_source['quality'])
+                                if data_new_source:
+                                    sources.append({'id': data_new_source.id, 'id_title': data_new_source.id_title, 'id_data_source': data_new_source.id_data_source, 'data': data_new_source.data, 'language': data_new_source.language, 'quality': data_new_source.quality})
                             for data_item_subtitle in data_item["subtitle"]:
                                 data_new_subtitle = TitleDataSubtitle.add(self.db, id_title=data_new_title_episode.id, id_data_source=1, data=data_item_subtitle['source'], language=data_item_subtitle['language'])
-                            else:
-                                default_body.update({"message": "failed recover key type"})
+                                if data_new_subtitle:
+                                    subtitles.append({'id': data_new_subtitle.id, 'id_title': data_new_subtitle.id_title, 'id_data_source': data_new_subtitle.id_data_source, 'data': data_new_subtitle.data, 'language': data_new_subtitle.language})
+                            default_body['data']['title'].append({'id': data_new_title_episode.id, 'description': data_new_title_episode.description, 'id_title': data_new_title_episode.id_title, 'id_title_type': data_new_title_episode.id_title_type, 'source': sources, 'subtitle': subtitles, 'date_created': data_new_title_episode.date_created})
                 else:
                     default_body.update({'message': 'error adding new title'});
         self.write(json.dumps(default_body, default=str))
