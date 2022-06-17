@@ -39,7 +39,9 @@ from handler.dashboard.dashboard import(
     api_title_add_source,
     api_title_add_subtitle,
     title_edit_content,
-    api_title_add_inside
+    api_title_add_inside,
+    download_list,
+    #download_upload
 )
 from handler.base import(
     baseAuthenticated,
@@ -47,6 +49,9 @@ from handler.base import(
 )
 
 from source.uptobox import uptobox
+
+
+Base.metadata.create_all(bind=engine)
 
 
 
@@ -220,6 +225,8 @@ def make_app():
             (r"/dashboard", index, dict(db_inst=SessionLocal())),
             (r"/dashboard/titulo/adicionar", title_add, dict(db_inst=SessionLocal())),
             (r"/dashboard/titulo/listar", title_list, dict(db_inst=SessionLocal())),
+            (r"/dashboard/download/listar", download_list, dict(db_inst=SessionLocal())),
+            # (r"/dashboard/download/upload", download_upload, dict(db_inst=SessionLocal())),
             (r"/dashboard/titulo/editar", title_edit, dict(db_inst=SessionLocal())),
             (r"/dashboard/titulo/editar-conteudo", title_edit_content, dict(db_inst=SessionLocal())),
             (r"/api/next-video", api_next, dict(db_inst=SessionLocal())),

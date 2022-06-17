@@ -1,0 +1,345 @@
+{% extends "../view/dashboard/index.html" %}
+{% block title %}Download - Listar{% end %}
+{% block css_add %}
+<style>
+	.data-title {
+		padding: 10px;
+		border: 1px solid #ccc;
+	}
+</style>
+{% end %}
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+  	<div class="col-md-12">
+  		<div class="card card-primary">
+			<div class="card-header">
+				<h3 class="card-title">Download</h3>
+			</div>
+			<div class="torrents_list" style="display: none;">
+				<div class="row">
+					<div class="col-md-12">
+						<form enctype="multipart/form-data" method="post">
+							<div class="form-group" style="padding: 10px;">
+								<label for="exampleInputFile">Upload Torrent</label>
+								<div class="input-group">
+									<div class="custom-file">
+										<input type="file" class="custom-file-input" id="exampleInputFile" name="file1">
+										<label class="custom-file-label" for="exampleInputFile">Arquivo</label>
+									</div>
+									<div class="input-group-append">
+										<input type="submit" value="Upload" />
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">Downloads</h3>
+							</div>
+						 
+							<div class="card-body">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th style="width: 10px">#</th>
+											<th>Nome</th>
+											<th>Tamanho</th>
+											<th>Servidor</th>
+											<th style="width: 40px">Velocidade</th>
+										</tr>
+									</thead>
+									<tbody id="torrents">
+										
+									</tbody>
+								</table>
+							</div>
+							<button type="button" class="btn btn-block btn-primary">Novo</button>
+
+							<div class="card-footer clearfix">
+								<ul class="pagination pagination-sm m-0 float-right">
+									<li class="page-item"><a class="page-link" href="#">«</a></li>
+									<li class="page-item"><a class="page-link" href="#">1</a></li>
+									<li class="page-item"><a class="page-link" href="#">2</a></li>
+									<li class="page-item"><a class="page-link" href="#">3</a></li>
+									<li class="page-item"><a class="page-link" href="#">»</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="torrent_files" style="display: none;">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title" id="torrent_files_title"></h3>
+							</div>
+						 
+							<div class="card-body">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th style="width: 10px">#</th>
+											<th>Nome</th>
+											<th>Tamanho</th>
+											<th>Status</th>
+										</tr>
+									</thead>
+									<tbody id="torrent_files_body">
+										
+									</tbody>
+								</table>
+							</div>
+							<button type="button" class="btn btn-block btn-primary">Novo</button>
+
+							<div class="card-footer clearfix">
+								<ul class="pagination pagination-sm m-0 float-right">
+									<li class="page-item"><a class="page-link" href="#">«</a></li>
+									<li class="page-item"><a class="page-link" href="#">1</a></li>
+									<li class="page-item"><a class="page-link" href="#">2</a></li>
+									<li class="page-item"><a class="page-link" href="#">3</a></li>
+									<li class="page-item"><a class="page-link" href="#">»</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="torrent_file_encoded" style="display: none;">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title" id="torrent_files_encoded"></h3>
+							</div>
+						 
+							<div class="card-body">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th style="width: 10px">#</th>
+											<th>Nome</th>
+											<th>Linguagem</th>
+											<th>Qualidade</th>
+											<th>Status</th>
+										</tr>
+									</thead>
+									<tbody id="torrent_files_encoded_body">
+										
+									</tbody>
+								</table>
+							</div>
+							<button type="button" class="btn btn-block btn-primary">Novo</button>
+
+							<div class="card-footer clearfix">
+								<ul class="pagination pagination-sm m-0 float-right">
+									<li class="page-item"><a class="page-link" href="#">«</a></li>
+									<li class="page-item"><a class="page-link" href="#">1</a></li>
+									<li class="page-item"><a class="page-link" href="#">2</a></li>
+									<li class="page-item"><a class="page-link" href="#">3</a></li>
+									<li class="page-item"><a class="page-link" href="#">»</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</section>
+{% end %}
+{% block nav_active %}
+<script>
+  open_nav_by_id('nav_download')
+  active_nav_by_id('nav_download_list')
+ </script>
+{% end %}
+{% block js_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+<script>
+	function humanFileSize(bytes, si=false, dp=1) {
+	  const thresh = si ? 1000 : 1024;
+
+	  if (Math.abs(bytes) < thresh) {
+	    return bytes + ' B';
+	  }
+
+	  const units = si 
+	    ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+	    : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+	  let u = -1;
+	  const r = 10**dp;
+
+	  do {
+	    bytes /= thresh;
+	    ++u;
+	  } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+	  return bytes.toFixed(dp) + ' ' + units[u];
+	}
+	var hash_from = "{{ hash_from }}";
+	var hash_file = "{{ hash_file }}";
+	var base_api_manager = 'http://manager.playthis.site:8000';
+	var base_api_ffmpeg = 'http://ffmpeg.playthis.site:8000';
+	var title_hash = false;
+	function updateData(){
+		$.getJSON(`${base_api_manager}/torrent/list-torrents`, function(data){
+			var dados = [];
+			for(var index=0;index<data.data.length;index++){
+				var item = data.data[index];
+				var key = Object.keys(item);
+				var item_key = item[key[0]];
+				console.log(item);
+				for(var index_data=0;index_data<item_key.data.length;index_data++){
+					var item_data = item_key.data[index_data];
+					var tds = $(`tr[data-id="${item_data.hash}"`).find('td');
+					tds[2].innerHTML = `${humanFileSize(item_data.size)}/${humanFileSize(item_data.downloaded)}`;
+					tds[4].innerHTML = `${humanFileSize(item_data.speed_down)}`;
+				}
+			}
+		});
+	}
+	function loadTorrents(){
+		$.getJSON(`${base_api_manager}/torrent/list-torrents`, function(data){
+			var dados = [];
+			for(var index=0;index<data.data.length;index++){
+				var item = data.data[index];
+				var key = Object.keys(item);
+				var item_key = item[key[0]];
+				for(var index_data=0;index_data<item_key.data.length;index_data++){
+					var item_data = item_key.data[index_data];
+					dados.push(item_data);
+				}
+			}
+			var sorted = dados.sort((a, b) => a.added_unix - b.added_unix);
+			sorted = sorted.reverse();
+			for(var index_data=0;index_data<sorted.length;index_data++){
+				var item_data = sorted[index_data];
+				$('#torrents').append(`<tr data-id="${item_data.hash}">
+					<td>${index_data}</td>
+					<td>${item_data.name} <a href="/dashboard/download/listar?hash_from=${item_data.hash}" id="btn_files"><i class="fa-solid fa-folder-open"></i></a> <a href="#" id="btn_delete"><i class="fa-solid fa-trash-can"></i></a></td>
+					<td>${humanFileSize(item_data.size)}/${humanFileSize(item_data.downloaded)}</td>
+					<td>${item_data.server_name}</td>
+					<td>${humanFileSize(item_data.speed_down)}</td>
+				</tr>`);
+			}
+		});
+	}
+	function loadFilesFromHash(hash){
+		$.getJSON(`${base_api_manager}/torrent/files/${hash}`, function(data){
+			title_hash = data.name;
+			$('#torrent_files_title').html(data.name);
+			for(var index=0;index<data.files.length;index++){
+				var item = data.files[index];
+				$('#torrent_files_body').append(`<tr data-hash="${CryptoJS.MD5(item.name)}">
+					<td>${index}</td>
+					<td><a href="${item.serve}" id="file_data">${item.name}</a> <a href="#" id="btn_transcode"><i class="fa-brands fa-centercode"></i></a></td>
+					<td>${humanFileSize(item.size)}</td>
+					<td>Nenhum</td>
+				</tr>`);
+			}
+			loadStatusFfmpeg();
+			setInterval(loadStatusFfmpeg, 5000);
+		});
+	}
+	function loadStatusFfmpeg(){
+		var hash = CryptoJS.MD5(title_hash).toString();
+		$.getJSON(`${base_api_ffmpeg}/file/status-hash-father/${hash}`, function(data){
+			for(var index=0;index<data.length;index++){
+				var item = data[index];
+				var item_dom = $(`tr[data-hash="${item.md5_name}"]`);
+				if(item_dom.length>=1){
+					var status = (item.id_status === 3 ? 'Convertido' : (item.id_status === 2 ? "Convertendo" : "Fila"));
+					if(item.id_status === 3){
+						console.log('here');
+						console.log(item_dom.find('td')[1].innerHTML);
+						item_dom.find('td')[1].innerHTML = `<a href="/dashboard/download/listar?hash_file=${item.md5_name}">${item.original_path.substring(item.original_path.lastIndexOf('/')+1)}</a>`;
+					}
+					item_dom.find('td')[3].innerHTML = status;
+				}
+			}
+		})
+	}
+	function loadDataEncoded(){
+		console.log('load data encoded');
+		$.getJSON(`${base_api_ffmpeg}/file/status-data-by-hash/${hash_file}`, function(data){
+			console.log(data);
+			console.log(data.length);
+			for(var index=0;index<data.length;index++){
+				console.log(data);
+				var item = data[index];
+				console.log(item);
+				$('#torrent_files_encoded_body').append(`<tr>
+					<td>${index}</td>
+					<td>${item.name}</td>
+					<td>${item.language}</td>
+					<td>${item.quality}</td>
+					<td>Nada</td>
+				</tr>`);
+			}
+		});
+	}
+	$(document).on('click', '#btn_transcode', function(e){
+		e.preventDefault();
+		var td_closest = $(this).closest('tr');
+		var href = td_closest.find('td');
+		var original_path = $($(href[1]).find('a')).attr('href');
+		$.ajax({
+		    type: 'POST',
+		    url: `${base_api_ffmpeg}/file/add`,
+		    data: `{"original_path": "${original_path}", "md5_father": "${CryptoJS.MD5(title_hash).toString()}"}`,
+		    contentType: "application/json",
+		    dataType: 'json'
+		});
+	});
+	$(document).on('click', '#file_data', function(e){
+		e.preventDefault();
+		var title = $(this).html();
+		console.log(CryptoJS.MD5(title).toString());
+	})
+	$(document).ready(function(){
+		if((hash_from === "0") && (hash_file === "0")){
+			console.log('tnc');
+			$('.torrents_list').css('display', 'block');
+			loadTorrents();
+			setInterval(updateData, 5000);
+		}else if(hash_file === "0"){
+			console.log('uepa');
+			$('.torrent_files').css('display', 'block');
+			loadFilesFromHash(hash_from);
+			console.log(title_hash);
+		}else{
+			console.log('aqui');
+			$('.torrent_file_encoded').css('display', 'block');
+			loadDataEncoded();
+		}
+	});
+	// $(document).ready(function(){
+	// 	$.getJSON(`/api/title-list?id_from=${id_from}`, function(data){
+	// 		if(data.status === true){
+	// 			for(var index=0;index<data.data.length;index++){
+	// 				var item = data.data[index];
+	// 				var url_to_go = (item.id_title_type == 4 ? '/dashboard/titulo/editar' : '/dashboard/titulo/listar');
+	// 				var actions = (item.id_title_type == 3 ? `<a href="/dashboard/titulo/editar-conteudo?id_from=${item.id}">Editar Conte&uacute;do` : '');
+	// 				$('tbody').append(`<tr>
+	// 					<td>${index}</td>
+	// 					<td><a href="${url_to_go}?id_from=${item.id}">${item.description}</a></td>
+	// 					<td>${item.id_title_type}</td>
+	// 					<td>${actions}</td>
+	// 				</tr>`);
+	// 			}
+	// 		}
+	// 	});
+	// });
+</script>
+{% end %}

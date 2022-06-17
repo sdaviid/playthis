@@ -14,7 +14,7 @@ class baseAuthenticated(tornado.web.RequestHandler):
         if not self.get_cookie("mycookie"):
             self.redirect('/')
     def body_handler(self):
-        data = self.request.body.decode('utf-8')
+        data = self.request.body.decode('utf-8').replace('+', ' ')
         temp = {}
         for item in data.split('&'):
             key = item.split('=')[0].strip()

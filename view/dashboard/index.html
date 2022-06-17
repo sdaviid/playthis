@@ -8,12 +8,19 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="/dashboard/static/dist/css/font.css">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="/dashboard/static/dist/css/font-awesome.css" />
-  <link rel="stylesheet" href="/dashboard/static/plugins/fontawesome-free/css/all.min.css">
+  <!-- <link rel="stylesheet" href="/dashboard/static/dist/css/font-awesome.css" /> -->
+  <!-- <link rel="stylesheet" href="/dashboard/static/plugins/fontawesome-free/css/all.min.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" integrity="sha512-xX2rYBFJSj86W54Fyv1de80DWBq7zYLn2z0I9bIhQG+rxIF6XVJUpdGnsNHWRa6AvP89vtFupEPDP8eZAtu9qA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/dashboard/static/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/dashboard/static/dist/css/adminlte.min.css">
+  <style>
+    a {
+      text-decoration: none;
+      color: white;
+    }
   {% block css_add %}
   {% end %}
 </head>
@@ -216,6 +223,30 @@
               </li>
               <li class="nav-item">
                 <a href="/dashboard/titulo/listar" class="nav-link" id="nav_title_list">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Listar</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" id="nav_download">
+            <!-- <a href="#" class="nav-link active"> -->
+              <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Download
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/dashboard/download/adicionar" class="nav-link" id="nav_download_add">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Adicionar</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/dashboard/download/listar" class="nav-link" id="nav_download_list">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Listar</p>
                 </a>

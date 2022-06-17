@@ -11,7 +11,7 @@ from model.title import(
 from model.data import DataSource
 from source.uptobox import uptobox
 import json
-
+import requests
 
 class api_title_type_list(baseAuthenticatedAPI):
     def get(self):
@@ -368,6 +368,7 @@ class title_add(baseAuthenticated):
 
 
 
+
 class title_list(baseAuthenticated):
     def get(self):
         id_from = self.get_argument('id_from', 0)
@@ -387,3 +388,35 @@ class title_edit_content(baseAuthenticated):
         id_from = self.get_argument('id_from', False)
         if id_from != False:
             self.render_base('view/dashboard/titulo-editar-conteudo.html', **{'id_from': id_from})
+
+
+
+class download_list(baseAuthenticated):
+    def upload_torrent(self, path):
+        url = 'http://azure04.playthis.site:8000/torrent/upload-torrent'
+        load = {'file': open(path, 'rb')}
+        try:
+            r = requests.post(url, files=load)
+            print(r.status_code)
+            if r.status_code == 200:
+                return r.json()
+        except Exception as err:
+            print('exception upload ... {}'.format(err))
+        return False
+    def get(self):
+        hash_from = self.get_argument('hash_from', 0)
+        hash_file = self.get_argument('hash_file', 0)
+        self.render_base('view/dashboard/download-listar.html', **{'hash_from': hash_from, 'hash_file': hash_file})
+    def post(self):
+        file1 = self.request.files['file1'][0]
+        original_fname = file1['filename']
+        output_file = open("uploads/" + original_fname, 'wb')
+        output_file.write(file1['body'])
+        data_upload = self.upload_torrent("uploads/" + original_fname)
+        if data_upload:
+            print(data_upload)
+            self.redirect('/dashboard/download/listar')
+        else:
+            self.finish("file " + original_fname + " is uploaded")
+
+
