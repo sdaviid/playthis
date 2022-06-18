@@ -19,6 +19,8 @@
 	</video>
 	<div id="video-next"">
 	</div>
+
+	<span id="porra"></span>
 <script>
 	var video_id = {{ video_id }}
 	var player = videojs('video_1');
@@ -31,6 +33,7 @@
 				console.log(item);
 				var temp = {src: item.data, type: 'video/mp4'}
 				sources.push(temp);
+				$('#porra').html(item.data);
 				// $('video').append(`
 				// 	<source src="${item.data}" type="video/mp4" label="${item.quality}">
 				// `);

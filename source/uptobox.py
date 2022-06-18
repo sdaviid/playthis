@@ -1,5 +1,5 @@
 import requests
-
+import urllib.parse
 
 def gibe_random_proxy():
     return {}
@@ -25,18 +25,30 @@ def download_from_uptobox(url):
 
 
 
+# def uptobox(url):
+#     headers = {
+#         'cookie': 'xfss=prmmlbgvakv3bunn'
+#     }
+#     proxy = gibe_random_proxy()
+#     try:
+#         print('hero')
+#         temp = requests.get(url, headers=headers, allow_redirects=False, proxies=proxy)
+#         if temp.status_code == 302:
+#             return temp.headers['location']
+#         else:
+#             return False
+#     except:
+#         print('there')
+#         return uptobox(url)
+
+
 def uptobox(url):
-    headers = {
-        'cookie': 'xfss=prmmlbgvakv3bunn'
-    }
-    proxy = gibe_random_proxy()
+    url_generate = f'http://uptobox.playthis.site:45990/file/generate/?uptobox_link={url}'
     try:
-        print('hero')
-        temp = requests.get(url, headers=headers, allow_redirects=False, proxies=proxy)
-        if temp.status_code == 302:
-            return temp.headers['location']
-        else:
-            return False
-    except:
-        print('there')
-        return uptobox(url)
+        response = requests.get(url_generate)
+        print(response.text)
+        if response.status_code == 200:
+            return response.json().get('download', False)
+    except Exception as err:
+        print(f'exception uptobox - {err}')
+    return False
