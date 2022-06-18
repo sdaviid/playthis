@@ -25,8 +25,7 @@ class login(tornado.web.RequestHandler):
         else:
             cookie = self.get_cookie('mycookie')
             if cookie == 'MzAwNQ==':
-                for arquivo in arquivos:
-                    self.write(f'<a href="/assistir?id={arquivo["key"]}">{arquivo["titulo"]}</a><br />')
+                self.redirect('/assistir')
             else:
                 self.write('nope')
     def post(self):
